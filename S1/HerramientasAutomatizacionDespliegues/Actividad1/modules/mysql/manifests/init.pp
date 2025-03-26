@@ -3,9 +3,27 @@ class mysql {
     ensure => installed,
   }
 
-  service { 'mysql-server' :
-    ensure    => true,
-    enable    => true,
-    hasstatus => true,
+  # Run startup script for wordpress
+  $init_script_path = "${document_root}/wordpressScript.sql"
+  file { $init_script_path:
+    ensure => file,
+    source => 'puppet:///modules/mysql/wordpressScript.sql',
+    owner  => 'root',
+    group  => 'root',
+    mode   => '0600',
+  }
+  exec { 'configure_wordpress_db' :
+    command => "mysql -u root < ${init_script_path}",
+    path    => ['/usr/bin', '/usr/local/bin'],
+    user    => 'root',
+    require => [File[$init_script_path], Package['mysql-server']],
+  }
+
+  service { 'mysql' :
+    ensure     => true,
+    enable     => true,
+    hasstatus  => true,
+    hasrestart => true,
+    name       => 'mysql',
   }
 }

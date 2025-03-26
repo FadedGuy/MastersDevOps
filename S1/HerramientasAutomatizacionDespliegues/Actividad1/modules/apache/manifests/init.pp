@@ -8,15 +8,15 @@ class apache {
     require => Package['apache2'],
   }
 
-  file { '/etc/apache2/sites-available/vagrant.conf':
+  file { '/etc/apache2/sites-available/wordpress.conf':
     content => template('apache/virtual-hosts.conf.erb'),
     require => File['/etc/apache2/sites-enabled/000-default.conf'],
   }
 
-  file { '/etc/apache2/sites-enabled/vagrant.conf':
+  file { '/etc/apache2/sites-enabled/wordpress.conf':
     ensure  => link,
-    target  => '/etc/apache2/sites-available/vagrant.conf',
-    require => File['/etc/apache2/sites-available/vagrant.conf'],
+    target  => '/etc/apache2/sites-available/wordpress.conf',
+    require => File['/etc/apache2/sites-available/wordpress.conf'],
     notify  => Service['apache2'],
   }
 
