@@ -1,10 +1,4 @@
 class wordpress {
-  $wp_site_title = 'Generic Title'
-  $wp_admin_user = 'admin'
-  $wp_admin_password = 'admin'
-  $wp_admin_email = 'admin@admin.com'
-  $wp_url = 'http://localhost:8080'
-
   # mkdir and chown
   # sudo mkdir -p /srv/www
   # sudo chown www-data: /srv/www
@@ -46,7 +40,6 @@ class wordpress {
   }
 
   exec { 'configure_wp_site' :
-    # command => 'wp core install  --title="My WordPress Site" --admin_user="admin" --admin_password="your_admin_password" --admin_email="you@example.com" --url="http://localhost:8080"',
     command => "wp core install --title='${wp_site_title}' --admin_user='${wp_admin_user}' --admin_password='${wp_admin_password}' --admin_email='${wp_admin_email}' --url='${wp_url}'",
     path    => ['/usr/local/bin', '/usr/bin'],
     cwd     => '/srv/www/wordpress',
