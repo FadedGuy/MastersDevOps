@@ -6,11 +6,11 @@ class mysql {
   # Run startup script for wordpress
   $init_script_path = "${document_root}/wordpressScript.sql"
   file { $init_script_path:
-    ensure => file,
-    source => 'puppet:///modules/mysql/wordpressScript.sql',
-    owner  => 'root',
-    group  => 'root',
-    mode   => '0600',
+    ensure  => file,
+    content => template('mysql/wordpressScript.sql.erb'),
+    owner   => 'root',
+    group   => 'root',
+    mode    => '0600',
   }
   exec { 'configure_wordpress_db' :
     command => "mysql -u root < ${init_script_path}",

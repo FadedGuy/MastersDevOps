@@ -1,0 +1,59 @@
+<?php
+/**
+ * The base configuration for WordPress
+ *
+ * @package WordPress
+ */
+
+// ** Database settings ** //
+/** The name of the database for WordPress */
+define( 'DB_NAME', '<%= @db_name %>' );
+
+/** Database username */
+define( 'DB_USER', '<%= @db_user %>' );
+
+/** Database password */
+define( 'DB_PASSWORD', '<%= @db_password %>' );
+
+/** Database hostname */
+define( 'DB_HOST', '<%= @db_host %>' );
+
+/** Database charset to use in creating database tables. */
+define( 'DB_CHARSET', 'utf8' );
+
+/** The database collate type. Don't change this if in doubt. */
+define( 'DB_COLLATE', '' );
+
+/**#@+
+ * Authentication unique keys and salts.
+ */
+define('AUTH_KEY',         '<%= @auth_key %>');
+define('SECURE_AUTH_KEY',  '<%= @secure_auth_key %>');
+define('LOGGED_IN_KEY',    '<%= @logged_in_key %>');
+define('NONCE_KEY',        '<%= @nonce_key %>');
+define('AUTH_SALT',        '<%= @auth_salt %>');
+define('SECURE_AUTH_SALT', '<%= @secure_auth_salt %>');
+define('LOGGED_IN_SALT',   '<%= @logged_in_salt %>');
+define('NONCE_SALT',       '<%= @nonce_salt %>');
+
+/**#@-*/
+
+/**
+ * WordPress database table prefix.
+ */
+$table_prefix = 'wp_';
+
+/**
+ * For developers: WordPress debugging mode.
+ */
+define( 'WP_DEBUG', false );
+
+/* That's all, stop editing! Happy publishing. */
+
+/** Absolute path to the WordPress directory. */
+if ( ! defined( 'ABSPATH' ) ) {
+        define( 'ABSPATH', __DIR__ . '/' );
+}
+
+/** Sets up WordPress vars and included files. */
+require_once ABSPATH . 'wp-settings.php';

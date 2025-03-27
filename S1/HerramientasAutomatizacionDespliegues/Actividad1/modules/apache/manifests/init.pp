@@ -20,13 +20,6 @@ class apache {
     notify  => Service['apache2'],
   }
 
-  # file { "${document_root}/index.html":
-  #   ensure  => present,
-  #   source => 'puppet:///modules/apache/index.html',
-  #   require => File['/etc/apache2/sites-enabled/vagrant.conf'],
-  #   notify  => Service['apache2'],
-  # }
-
   service { 'apache2':
     ensure    => running,
     enable    => true,
