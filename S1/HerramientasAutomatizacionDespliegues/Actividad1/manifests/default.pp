@@ -33,9 +33,3 @@ exec { 'apt-update' :
 }
 # Actualizar los paquetes
 Exec['apt-update'] -> Package <| |>
-
-$ipv4_address = $facts['networking']['ip']
-notify { 'Showing machine Facts':
-  message => "Machine with ${facts['memory']['system']['total']} of memory and ${facts['processors']['count']} processor/s.
-              Please check access to http://${ipv4_address}",
-}
