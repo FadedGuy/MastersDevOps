@@ -1,0 +1,2 @@
+Con ubuntu/bionic64 finaliza bien el aprovisionamiento pero falla vagrant ssh
+con bento/ubuntu-22.04 fallan los facts de hosts
