@@ -1,0 +1,7 @@
+{
+    "run_list": [
+      "recipe[apache::default]"
+    ],
+    "some_attribute": "value"
+  }
+  
