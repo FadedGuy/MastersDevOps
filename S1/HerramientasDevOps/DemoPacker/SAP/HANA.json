@@ -1,0 +1,96 @@
+{
+  "variables": {
+    "client_id": "{{env `AZURE_CLIENT_ID`}}",
+    "client_secret": "{{env `AZURE_CLIENT_SECRET`}}",
+    "subscription_id": "{{env `AZURE_SUBSCRIPTION_ID`}}",
+    "tenant_id": "{{env `AZURE_TENANT_ID`}}",
+    "location": "eastus",
+    "resource_group_name": "s4hana-hana-rg",
+    "image_name": "s4hana-hana-{{timestamp}}",
+    "vm_size": "Standard_E32ds_v4",
+    "os_disk_size_gb": "256",
+    "source_image_urn": "SUSE:SLES-SAP:15-SP4:latest",
+    "ssh_username": "azureuser",
+    "ssh_password": "YourSecurePassword",
+    "hana_sid": "HDB",
+    "hana_instance_number": "00",
+    "s4hana_sid": "S4H",
+    "s4hana_instance_number": "00",
+    "system_password": "YourSecurePassword"
+  },
+  "builders": [
+    {
+      "type": "azure-arm",
+      "client_id": "{{user `client_id`}}",
+      "client_secret": "{{user `client_secret`}}",
+      "subscription_id": "{{user `subscription_id`}}",
+      "tenant_id": "{{user `tenant_id`}}",
+      "location": "{{user `location`}}",
+      "resource_group_name": "{{user `resource_group_name`}}",
+      "image_name": "{{user `image_name`}}",
+      "vm_size": "{{user `vm_size`}}",
+      "os_disk_size_gb": "{{user `os_disk_size_gb`}}",
+      "source_image_urn": "{{user `source_image_urn`}}",
+      "ssh_username": "{{user `ssh_username`}}",
+      "ssh_password": "{{user `ssh_password`}}",
+      "managed_image_resource_group_name": "{{user `resource_group_name`}}",
+      "managed_image_name": "{{user `image_name`}}"
+    }
+  ],
+  "provisioners": [
+    {
+      "type": "shell",
+      "inline": [
+        "sudo su -",
+        "zypper refresh",
+        "zypper update -y",
+        "zypper install -y sapconf"
+      ]
+    },
+    {
+      "type": "file",
+      "source": "hana_install",
+      "destination": "/tmp/hana_install"
+    },
+    {
+      "type": "shell",
+      "inline": [
+        "sudo su -",
+        "chmod +x /tmp/hana_install/install_hana.sh",
+        "/tmp/hana_install/install_hana.sh -s {{user `hana_sid`}} -i {{user `hana_instance_number`}} -p {{user `system_password`}}"
+      ]
+    },
+    {
+      "type": "shell",
+      "inline": [
+        "sudo su -",
+        "hdbsql -i 00 -u SYSTEM -p {{user `system_password`}} \"CREATE TENANT DATABASE TenantDB SYSTEM USER PASSWORD {{user `system_password`}}\""
+      ]
+    },
+    {
+      "type": "file",
+      "source": "s4hana_install",
+      "destination": "/tmp/s4hana_install"
+    },
+    {
+      "type": "shell",
+      "inline": [
+        "sudo su -",
+        "chmod +x /tmp/s4hana_install/install_s4hana.sh",
+        "/tmp/s4hana_install/install_s4hana.sh -s {{user `s4hana_sid`}} -i {{user `s4hana_instance_number`}} -p {{user `system_password`}}"
+      ]
+    }
+    {
+      "type": "Shell",
+      "inline":[
+        "az vm open-port \
+  --resource-group <resource_group_name> \
+  --name <vm_name> \
+  --port 30015 \
+  --priority 1001 \
+  --description "Allow access to SAP HANA"
+"
+      ]
+    }
+  ]
+}

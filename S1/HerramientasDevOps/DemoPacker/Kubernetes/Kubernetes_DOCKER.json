@@ -1,0 +1,114 @@
+{
+"variables": {
+"client_id": "{{env `AZURE_CLIENT_ID`}}",
+"client_secret": "{{env `AZURE_CLIENT_SECRET`}}",
+"subscription_id": "{{env `AZURE_SUBSCRIPTION_ID`}}",
+"tenant_id": "{{env `AZURE_TENANT_ID`}}",
+"resource_group_name": "packer-demo",
+"location": "eastus",
+"image_name": "k8s-docker-image-{{timestamp}}",
+"vm_size": "Standard_DS2_v2",
+"ssh_username": "packer"
+},
+"builders": [
+{
+"type": "azure-arm",
+// Información de autenticación de Azure
+"client_id": "{{user `client_id`}}",
+"client_secret": "{{user `client_secret`}}",
+"subscription_id": "{{user `subscription_id`}}",
+"tenant_id": "{{user `tenant_id`}}",
+// Ubicación y nombre del grupo de recursos
+"resource_group_name": "{{user `resource_group_name`}}",
+"location": "{{user `location`}}",
+// Nombre de la imagen
+"image_name": "{{user `image_name`}}",
+"image_offer": "UbuntuServer",
+"image_publisher": "Canonical",
+"image_sku": "18.04-LTS",
+"os_type": "Linux",
+"vm_size": "{{user `vm_size`}}",
+// Configuración de SSH
+"ssh_username": "{{user `ssh_username`}}",
+"ssh_pty": true,
+// Almacenamiento en caché del disco del sistema operativo
+"managed_image_storage_account_type": "Standard_LRS",
+// Tiempo de espera para SSH
+"ssh_timeout": "5m",
+// Provisioners: scripts para instalar software
+"provisioners": [
+{
+"type": "shell",
+"inline": [
+"sudo apt-get update -y",
+"sudo apt-get install -y apt-transport-https ca-certificates curl gnupg lsb-release"
+]
+},
+{
+"type": "shell",
+"inline": [
+"curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --dearmor -o /usr/share/keyrings/docker-archive-keyring.gpg",
+"echo \"deb [arch=$(dpkg --print-architecture)
+  signed-by=/usr/share/keyrings/docker-archive-keyring.gpg] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable\" |
+  sudo tee /etc/apt/sources.list.d/docker.list > /dev/null"
+]
+},
+{
+"type": "shell",
+"inline": [
+"sudo apt-get update -y",
+"sudo apt-get install -y docker-ce docker-ce-cli containerd.io"
+]
+},
+{
+"type": "shell",
+"inline": [
+"curl -s https://packages.cloud.google.com/apt/doc/apt-key.gpg | sudo apt-key add -",
+"echo \"deb https://apt.kubernetes.io/ kubernetes-xenial main\" | sudo tee -a /etc/apt/sources.list.d/kubernetes.list"
+]
+},
+{
+"type": "shell",
+"inline": [
+"sudo apt-get update -y",
+"sudo apt-get install -y kubelet kubeadm kubectl"
+]
+},
+{
+"type": "shell",
+"inline": [
+"sudo systemctl enable docker",
+"sudo systemctl start docker"
+]
+},
+{
+"type": "shell",
+"inline": [
+"sudo usermod -aG docker {{user `ssh_username`}}"
+]
+}
+]
+}
+],
+"post-processors": [
+{
+"type": "shell-local",
+"inline": [
+"echo 'Subscription ID: {{user `subscription_id`}}'",
+"echo 'Resource Group: {{user `resource_group_name`}}'",
+"echo 'Image Name: {{user `image_name`}}'"
+]
+},
+{
+"type": "shell-local",
+"inline": [
+"az login --service-principal -u {{user `client_id`}} -p {{user `client_secret`}} --tenant {{user `tenant_id`}}",
+"az account set --subscription {{user `subscription_id`}}",
+"az vm create --resource-group {{user `resource_group_name`}}
+--name k8s-vm --image {{user `image_name`}}
+--admin-username {{user `ssh_username`}}
+--generate-ssh-keys --size {{user `vm_size`}}"
+]
+}
+]
+}

@@ -1,0 +1,115 @@
+{
+  "variables": {
+    "aws_region": "us-east-1",
+    "ami_base": "ami-xxxxxxxxxxxxx",
+    "instance_type": "t2.micro",
+    "ssh_username": "ubuntu",
+    "ami_name": "mean-php-{{timestamp}}",
+    "ami_description": "AMI with MEAN Stack and PHP Application",
+    "php_app_path": "php-app/",
+    "tags": "Name=MEAN-PHP-AMI,Environment=Development",
+    "deployment_script": "deploy.sh",
+    "ec2_instance_type": "t3.medium",
+    "ec2_keypair_name": "your-keypair",
+    "ec2_security_group_ids": "sg-xxxxxxxxxxxxx",
+    "subnet_id": "subnet-xxxxxxxxxxxxx"
+  },
+  "builders": [
+    {
+      "type": "amazon-ebs",
+      "region": "{{ user `aws_region` }}",
+      "source_ami": "{{ user `ami_base` }}",
+      "instance_type": "{{ user `instance_type` }}",
+      "ssh_username": "{{ user `ssh_username` }}",
+      "ami_name": "{{ user `ami_name` }}",
+      "ami_description": "{{ user `ami_description` }}",
+      "encrypt_boot": false
+    }
+  ],
+  "provisioners": [
+    {
+      "type": "shell",
+      "inline": [
+        "sudo apt-get update",
+        "sudo apt-get upgrade -y"
+      ]
+    },
+    {
+      "type": "shell",
+      "inline": [
+        "sudo apt-get install -y curl git apt-transport-https ca-certificates"
+      ]
+    },
+    {
+      "type": "shell",
+      "inline": [
+        "curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | sudo apt-key add -",
+        "echo 'deb https://dl.yarnpkg.com/debian stable main' | sudo tee /etc/apt/sources.list.d/yarn.list"
+      ]
+    },
+    {
+      "type": "shell",
+      "inline": [
+        "sudo apt-get update",
+        "sudo apt-get install -y nodejs npm yarn"
+      ]
+    },
+    {
+      "type": "shell",
+      "inline": [
+        "sudo npm install -g @angular/cli"
+      ]
+    },
+    {
+      "type": "shell",
+      "inline": [
+        "sudo apt-get install -y mongodb"
+      ]
+    },
+    {
+      "type": "shell",
+      "inline": [
+        "sudo systemctl enable mongod",
+        "sudo systemctl start mongod"
+      ]
+    },
+    {
+      "type": "shell",
+      "inline": [
+        "sudo apt-get install -y apache2 php libapache2-mod-php php-mysql"
+      ]
+    },
+    {
+      "type": "file",
+      "source": "{{ user `php_app_path` }}",
+      "destination": "/var/www/html/"
+    },
+        {
+      "type": "shell",
+      "inline": [
+        "sudo chown -R www-data:www-data /var/www/html",
+        "sudo a2enmod rewrite",
+        "sudo systemctl restart apache2"
+      ]
+    },
+    {
+      "type": "shell",
+      "inline": [
+        "echo 'MEAN and PHP Stack installed successfully!' "
+      ]
+    }
+  ],
+  "post-processors": [
+    [
+      {
+        "type": "manifest",
+        "output": "manifest.json",
+        "strip_path": true
+      },
+      {
+        "type": "shell-local",
+        "command": "{{ user `deployment_script` }} {{.AMIId}} {{ user `aws_region` }} {{ user `ec2_instance_type` }} {{ user `ec2_keypair_name` }} {{ user `ec2_security_group_ids` }} {{ user `subnet_id` }}"
+      }
+    ]
+  ]
+}
