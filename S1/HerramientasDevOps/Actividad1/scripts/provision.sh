@@ -8,7 +8,6 @@ sudo apt-get install -y nginx curl
 
 # Configuramos firewall para nginx
 sudo ufw allow "Nginx HTTP"
-sudo ufw allow "Nginx HTTPS"
 
 # Descargamos y configuramos nodejs v18
 curl -sL https://deb.nodesource.com/setup_18.x | sudo -E bash -

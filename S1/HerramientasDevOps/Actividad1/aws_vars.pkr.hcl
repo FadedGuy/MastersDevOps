@@ -1,4 +1,3 @@
-
 variable "aws_access_key" {
   type    = string
   default = "AKIAS3HZXV2VGIQKUVII"
@@ -31,5 +30,5 @@ variable "aws_ssh_username" {
 
 variable "aws_security_group" {
   type = string
-  default = "sg-0ca2b2a10ff71c2fd"
+  default = "sg-0ab298dbfface9ac0"
 }
