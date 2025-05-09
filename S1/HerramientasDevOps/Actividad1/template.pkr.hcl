@@ -33,6 +33,34 @@ source "amazon-ebs" "ubuntu" {
   }
 }
 
+build {
+  sources = ["source.amazon-ebs.ubuntu"]
+
+  provisioner "file" {
+    source      = "./app"
+    destination = "/home/${var.aws_ssh_username}/app"
+  }
+
+  provisioner "file" {
+    source      = "./scripts"
+    destination = "/home/${var.aws_ssh_username}/scripts"
+  }
+
+  provisioner "shell" {
+    script = "./scripts/provision.sh"
+  }
+
+  post-processor "manifest" {
+    output = "manifest.json"
+  }
+
+  post-processor "shell-local" {
+    inline = [
+      "powershell -Command \"$m=Get-Content manifest.json | ConvertFrom-Json; $ami=$m.builds[-1].artifact_id.Split(':')[1]; aws ec2 run-instances --region ${var.aws_region} --image-id $ami --instance-type ${var.aws_instance_type} --key-name PackerKeyPair --associate-public-ip-address --security-group-ids ${var.aws_security_group}\""
+    ]
+  }
+}
+
 source "azure-arm" "ubuntu" {
   client_id = var.azure_client_id
   client_secret = var.azure_client_secret
@@ -84,30 +112,4 @@ build {
   }
 }
 
-build {
-  sources = ["source.amazon-ebs.ubuntu"]
 
-  provisioner "file" {
-    source      = "./app"
-    destination = "/home/${var.aws_ssh_username}/app"
-  }
-
-  provisioner "file" {
-    source      = "./scripts"
-    destination = "/home/${var.aws_ssh_username}/scripts"
-  }
-
-  provisioner "shell" {
-    script = "./scripts/provision.sh"
-  }
-
-  post-processor "manifest" {
-    output = "manifest.json"
-  }
-
-  post-processor "shell-local" {
-    inline = [
-      "powershell -Command \"$m=Get-Content manifest.json | ConvertFrom-Json; $ami=$m.builds[-1].artifact_id.Split(':')[1]; aws ec2 run-instances --region ${var.aws_region} --image-id $ami --instance-type ${var.aws_instance_type} --key-name PackerKeyPair --associate-public-ip-address --security-group-ids ${var.aws_security_group}\""
-    ]
-  }
-}
