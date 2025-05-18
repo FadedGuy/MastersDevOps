@@ -1,0 +1,38 @@
+# Versión de configuración de Vagrant
+Vagrant.configure("2") do |config|
+  # VM llamada "ubuntu"
+  config.vm.define "vm1" do |vm1|
+    # Imagen base
+    vm1.vm.box = "ubuntu/bionic64" 
+
+    # Asigna una IP privada estática a la VM
+    vm1.vm.network "private_network", ip: "192.168.250.40"
+
+    # Uso de VirtualBox para la VM
+    vm1.vm.provider "virtualbox" do |vb|
+      vb.memory = "2048"
+      # Automaticamente abre una ventana de consola   
+      vb.gui = true
+    end
+
+    vm1.vm.provision "shell", inline: <<-SHELL
+      sudo apt-get update
+      sudo apt-get install -y xfce4 wireshark virtualbox-guest-dkms virtualbox-guest-utils virtualbox-guest-x11
+      sudo startxfce4&
+    SHELL
+  end
+
+  # VM llamada "ubuntu"
+  config.vm.define "vm2" do |vm2|
+    # Imagen base
+    vm2.vm.box = "ubuntu/bionic64" 
+
+    # Asigna una IP privada estática a la VM
+    vm2.vm.network "private_network", ip: "192.168.250.41"
+
+    # Uso de VirtualBox para la VM
+    vm2.vm.provider "virtualbox" do |vb|
+      vb.memory = "2048"
+    end
+  end
+end
