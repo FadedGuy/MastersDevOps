@@ -1,0 +1,6 @@
+---
+- host: all
+  become: true
+  tasks:
+    - name: Make sure we can connect to env
+      ping
