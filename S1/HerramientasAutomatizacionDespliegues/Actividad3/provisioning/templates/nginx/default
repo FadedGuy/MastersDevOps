@@ -26,6 +26,11 @@ server {
         deny all;
     }
 
+    location /wp-admin {
+        allow 127.0.0.1;
+        deny all;
+    }
+
     location / {
         try_files $uri $uri/ /index.php?$args;
     }
