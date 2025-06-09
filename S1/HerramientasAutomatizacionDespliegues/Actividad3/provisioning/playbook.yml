@@ -1,6 +1,194 @@
 ---
-- host: all
+- hosts: all
   become: true
   tasks:
     - name: Make sure we can connect to env
-      ping
+      ansible.builtin.ping:
+
+    - name: Install required tools
+      apt:
+        name: "{{ item }}"
+        state: present
+      loop:
+        - unzip
+
+    # PHP
+    - name: Install PHP
+      apt:
+        name:
+          - php
+          - php-fpm
+          - php-mysql
+          - php-xml
+        state: present
+        update_cache: yes
+
+    - name: Check apache2 installed
+      package_facts:
+        manager: auto
+
+    - name: Stop apache2
+      service:
+        name: apache2
+        state: stopped
+        enabled: no
+      ignore_errors: no
+      when: "'apache2' in ansible_facts.packages"
+
+    - name: Remove apache2
+      apt:
+        name: apache2
+        state: absent
+        purge: true
+      when: "'apache2' in ansible_facts.packages"
+
+    # MySQL
+    - name: Install MySQL
+      apt:
+        name:
+          - mysql-server
+          - python3-pymysql
+        state: present
+        update_cache: yes
+
+    - name: Set MySQL Python Client library
+      set_fact:
+        ansible_python_interpreter: /usr/bin/python3
+        ansible_mysql_python: pymysql
+
+    - name: Generate new root password
+      command: openssl rand -hex 7 creates=/root/.my.cnf
+      register: mysql_new_root_pwd
+
+    - name: Ensure MySQL root doesn't use pwd
+      mysql_user:
+        name: root
+        host: localhost
+        state: present
+        login_unix_socket: /var/run/mysqld/mysqld.sock
+      no_log: true
+
+    - name: Remove anonymous MySQL users
+      mysql_user:
+        name: ""
+        state: absent
+        login_unix_socket: /var/run/mysqld/mysqld.sock
+      when: mysql_new_root_pwd.changed
+
+    - name: Remove test MySQL database
+      mysql_db:
+        name: test
+        state: absent
+        login_unix_socket: /var/run/mysqld/mysqld.sock
+      when: mysql_new_root_pwd.changed
+
+    - name: Update MySQL root password
+      mysql_user:
+        name: root
+        host: "{{ item }}"
+        password: "{{ mysql_new_root_pwd.stdout }}"
+        login_unix_socket: /var/run/mysqld/mysqld.sock
+      loop:
+        - "{{ ansible_hostname }}"
+        - 127.0.0.1
+        - ::1
+        - localhost
+      when: mysql_new_root_pwd.changed
+
+    - name: Create my.cnf from template
+      template:
+        src: templates/mysql/my.cnf
+        dest: /root/.my.cnf
+      when: mysql_new_root_pwd.changed
+
+    - name: Output new MySQL root password
+      debug:
+        msg: "New root pwd is {{ mysql_new_root_pwd.stdout }}"
+      when: mysql_new_root_pwd.changed
+
+    # nginx
+    - name: Install nginx
+      apt:
+        name: nginx
+        state: present
+
+    - name: Start nginx
+      service:
+        name: nginx
+        state: started
+        enabled: true
+
+    - name: Create nginx config
+      template:
+        src: templates/nginx/default
+        dest: /etc/nginx/sites-available/default
+      notify: Restart nginx
+
+    # wordpress
+    - name: Copy wordpress.zip into tmp
+      copy:
+        src: files/wordpress-6.8.1.zip
+        dest: /tmp/wordpress.zip
+
+    - name: Unzip WordPress
+      unarchive:
+        src: /tmp/wordpress.zip
+        dest: /tmp
+        copy: no
+        creates: /tmp/wordpress/wp-settings.php
+
+    - name: Create project folder
+      file:
+        path: /var/www/localhost
+        state: directory
+
+    - name: Copy WordPress files
+      copy:
+        src: /tmp/wordpress/
+        dest: /var/www/localhost/
+        remote_src: yes
+
+    - name: Does db exist?
+      command: mysql -u root wordpress -e "SELECT ID FROM wordpress.wp_users LIMIT 1;"
+      register: db_exist
+      ignore_errors: true
+      changed_when: false
+
+    - name: Create WordPress MySQL db
+      mysql_db:
+        name: wordpress
+        state: present
+      when: db_exist.rc > 0
+
+    - name: Create WordPress MySQL user
+      mysql_user:
+        name: wordpress
+        host: localhost
+        password: bananas
+        priv: wordpress.*:ALL
+      when: db_exist.rc > 0
+
+    - name: Create wp-config
+      template:
+        src: templates/wordpress/wp-config.php
+        dest: /var/www/localhost/wp-config.php
+      when: db_exist.rc > 0
+
+    - name: Copy WordPress db
+      copy:
+        src: files/wp-database.sql
+        dest: /tmp/wp-database.sql
+      when: db_exist.rc > 0
+
+    - name: Import WordPress db
+      mysql_db:
+        target: /tmp/wp-database.sql
+        state: import
+        name: wordpress
+      when: db_exist.rc > 0
+
+  handlers:
+    - name: Restart nginx
+      service:
+        name: nginx
+        state: restarted
