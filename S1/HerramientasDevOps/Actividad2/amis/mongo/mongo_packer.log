@@ -1,0 +1,232 @@
+amazon-ebs.ubuntu: output will be in this color.
+
+==> amazon-ebs.ubuntu: Prevalidating any provided VPC information
+==> amazon-ebs.ubuntu: Prevalidating AMI Name: mongo-20250612055835
+    amazon-ebs.ubuntu: Found Image ID: ami-0d1b5a8c13042c939
+==> amazon-ebs.ubuntu: Setting public IP address to true on instance without a subnet ID
+==> amazon-ebs.ubuntu: No VPC ID provided, Packer will use the default VPC
+==> amazon-ebs.ubuntu: Inferring subnet from the selected VPC "vpc-06a19a402fc9c315c"
+==> amazon-ebs.ubuntu: Set subnet as "subnet-0b6b246c34b829300"
+==> amazon-ebs.ubuntu: Creating temporary keypair: packer_684a6c8b-a49b-b19b-f4e7-30d2cc99ae6f
+==> amazon-ebs.ubuntu: Creating temporary security group for this instance: packer_684a6c8f-f4ec-ab93-f6d4-fbadbe156c0a
+==> amazon-ebs.ubuntu: Authorizing access to port 22 from [0.0.0.0/0] in the temporary security groups...
+==> amazon-ebs.ubuntu: Launching a source AWS instance...
+==> amazon-ebs.ubuntu: changing public IP address config to true for instance on subnet "subnet-0b6b246c34b829300"
+    amazon-ebs.ubuntu: Instance ID: i-00c5950acbf477029
+==> amazon-ebs.ubuntu: Waiting for instance (i-00c5950acbf477029) to become ready...
+==> amazon-ebs.ubuntu: Using SSH communicator to connect: 18.118.83.212
+==> amazon-ebs.ubuntu: Waiting for SSH to become available...
+==> amazon-ebs.ubuntu: Connected to SSH!
+==> amazon-ebs.ubuntu: Uploading ./scripts => /home/ubuntu/scripts
+==> amazon-ebs.ubuntu: Provisioning with shell script: ./scripts/provision.sh
+    amazon-ebs.ubuntu: Hit:1 http://us-east-2.ec2.archive.ubuntu.com/ubuntu noble InRelease
+    amazon-ebs.ubuntu: Get:2 http://us-east-2.ec2.archive.ubuntu.com/ubuntu noble-updates InRelease [126 kB]
+    amazon-ebs.ubuntu: Get:3 http://us-east-2.ec2.archive.ubuntu.com/ubuntu noble-backports InRelease [126 kB]
+    amazon-ebs.ubuntu: Get:4 http://us-east-2.ec2.archive.ubuntu.com/ubuntu noble/universe amd64 Packages [15.0 MB]
+    amazon-ebs.ubuntu: Get:5 http://security.ubuntu.com/ubuntu noble-security InRelease [126 kB]
+    amazon-ebs.ubuntu: Get:6 http://us-east-2.ec2.archive.ubuntu.com/ubuntu noble/universe Translation-en [5982 kB]
+    amazon-ebs.ubuntu: Get:7 http://security.ubuntu.com/ubuntu noble-security/main amd64 Packages [868 kB]
+    amazon-ebs.ubuntu: Get:8 http://us-east-2.ec2.archive.ubuntu.com/ubuntu noble/universe amd64 Components [3871 kB]
+    amazon-ebs.ubuntu: Get:9 http://us-east-2.ec2.archive.ubuntu.com/ubuntu noble/universe amd64 c-n-f Metadata [301 kB]
+    amazon-ebs.ubuntu: Get:10 http://us-east-2.ec2.archive.ubuntu.com/ubuntu noble/multiverse amd64 Packages [269 kB]
+    amazon-ebs.ubuntu: Get:11 http://us-east-2.ec2.archive.ubuntu.com/ubuntu noble/multiverse Translation-en [118 kB]
+    amazon-ebs.ubuntu: Get:12 http://us-east-2.ec2.archive.ubuntu.com/ubuntu noble/multiverse amd64 Components [35.0 kB]
+    amazon-ebs.ubuntu: Get:13 http://us-east-2.ec2.archive.ubuntu.com/ubuntu noble/multiverse amd64 c-n-f Metadata [8328 B]
+    amazon-ebs.ubuntu: Get:14 http://us-east-2.ec2.archive.ubuntu.com/ubuntu noble-updates/main amd64 Packages [1118 kB]
+    amazon-ebs.ubuntu: Get:15 http://us-east-2.ec2.archive.ubuntu.com/ubuntu noble-updates/main amd64 Components [162 kB]
+    amazon-ebs.ubuntu: Get:16 http://us-east-2.ec2.archive.ubuntu.com/ubuntu noble-updates/universe amd64 Packages [1078 kB]
+    amazon-ebs.ubuntu: Get:17 http://us-east-2.ec2.archive.ubuntu.com/ubuntu noble-updates/universe Translation-en [274 kB]
+    amazon-ebs.ubuntu: Get:18 http://us-east-2.ec2.archive.ubuntu.com/ubuntu noble-updates/universe amd64 Components [376 kB]
+    amazon-ebs.ubuntu: Get:19 http://us-east-2.ec2.archive.ubuntu.com/ubuntu noble-updates/universe amd64 c-n-f Metadata [26.0 kB]
+    amazon-ebs.ubuntu: Get:20 http://us-east-2.ec2.archive.ubuntu.com/ubuntu noble-updates/restricted amd64 Components [212 B]
+    amazon-ebs.ubuntu: Get:21 http://us-east-2.ec2.archive.ubuntu.com/ubuntu noble-updates/multiverse amd64 Packages [21.7 kB]
+    amazon-ebs.ubuntu: Get:22 http://us-east-2.ec2.archive.ubuntu.com/ubuntu noble-updates/multiverse Translation-en [4788 B]
+    amazon-ebs.ubuntu: Get:23 http://us-east-2.ec2.archive.ubuntu.com/ubuntu noble-updates/multiverse amd64 Components [940 B]
+    amazon-ebs.ubuntu: Get:24 http://us-east-2.ec2.archive.ubuntu.com/ubuntu noble-updates/multiverse amd64 c-n-f Metadata [592 B]
+    amazon-ebs.ubuntu: Get:25 http://us-east-2.ec2.archive.ubuntu.com/ubuntu noble-backports/main amd64 Packages [39.2 kB]
+    amazon-ebs.ubuntu: Get:26 http://us-east-2.ec2.archive.ubuntu.com/ubuntu noble-backports/main Translation-en [8676 B]
+    amazon-ebs.ubuntu: Get:27 http://us-east-2.ec2.archive.ubuntu.com/ubuntu noble-backports/main amd64 Components [7092 B]
+    amazon-ebs.ubuntu: Get:28 http://us-east-2.ec2.archive.ubuntu.com/ubuntu noble-backports/main amd64 c-n-f Metadata [272 B]
+    amazon-ebs.ubuntu: Get:29 http://us-east-2.ec2.archive.ubuntu.com/ubuntu noble-backports/universe amd64 Packages [27.1 kB]
+    amazon-ebs.ubuntu: Get:30 http://us-east-2.ec2.archive.ubuntu.com/ubuntu noble-backports/universe Translation-en [16.5 kB]
+    amazon-ebs.ubuntu: Get:31 http://us-east-2.ec2.archive.ubuntu.com/ubuntu noble-backports/universe amd64 Components [16.4 kB]
+    amazon-ebs.ubuntu: Get:32 http://us-east-2.ec2.archive.ubuntu.com/ubuntu noble-backports/universe amd64 c-n-f Metadata [1304 B]
+    amazon-ebs.ubuntu: Get:33 http://us-east-2.ec2.archive.ubuntu.com/ubuntu noble-backports/restricted amd64 Components [216 B]
+    amazon-ebs.ubuntu: Get:34 http://us-east-2.ec2.archive.ubuntu.com/ubuntu noble-backports/restricted amd64 c-n-f Metadata [116 B]
+    amazon-ebs.ubuntu: Get:35 http://us-east-2.ec2.archive.ubuntu.com/ubuntu noble-backports/multiverse amd64 Components [212 B]
+    amazon-ebs.ubuntu: Get:36 http://us-east-2.ec2.archive.ubuntu.com/ubuntu noble-backports/multiverse amd64 c-n-f Metadata [116 B]
+    amazon-ebs.ubuntu: Get:37 http://security.ubuntu.com/ubuntu noble-security/main amd64 Components [21.5 kB]
+    amazon-ebs.ubuntu: Get:38 http://security.ubuntu.com/ubuntu noble-security/universe amd64 Packages [849 kB]
+    amazon-ebs.ubuntu: Get:39 http://security.ubuntu.com/ubuntu noble-security/universe Translation-en [187 kB]
+    amazon-ebs.ubuntu: Get:40 http://security.ubuntu.com/ubuntu noble-security/universe amd64 Components [52.2 kB]
+    amazon-ebs.ubuntu: Get:41 http://security.ubuntu.com/ubuntu noble-security/universe amd64 c-n-f Metadata [17.0 kB]
+    amazon-ebs.ubuntu: Get:42 http://security.ubuntu.com/ubuntu noble-security/restricted amd64 Components [212 B]
+    amazon-ebs.ubuntu: Get:43 http://security.ubuntu.com/ubuntu noble-security/multiverse amd64 Packages [17.7 kB]
+    amazon-ebs.ubuntu: Get:44 http://security.ubuntu.com/ubuntu noble-security/multiverse Translation-en [3792 B]
+    amazon-ebs.ubuntu: Get:45 http://security.ubuntu.com/ubuntu noble-security/multiverse amd64 Components [212 B]
+    amazon-ebs.ubuntu: Get:46 http://security.ubuntu.com/ubuntu noble-security/multiverse amd64 c-n-f Metadata [380 B]
+    amazon-ebs.ubuntu: Fetched 31.2 MB in 8s (3859 kB/s)
+    amazon-ebs.ubuntu: Reading package lists...
+    amazon-ebs.ubuntu: Reading package lists...
+    amazon-ebs.ubuntu: Building dependency tree...
+    amazon-ebs.ubuntu: Reading state information...
+    amazon-ebs.ubuntu: gnupg is already the newest version (2.4.4-2ubuntu17.2).
+    amazon-ebs.ubuntu: gnupg set to manually installed.
+    amazon-ebs.ubuntu: curl is already the newest version (8.5.0-2ubuntu10.6).
+    amazon-ebs.ubuntu: curl set to manually installed.
+    amazon-ebs.ubuntu: 0 upgraded, 0 newly installed, 0 to remove and 0 not upgraded.
+    amazon-ebs.ubuntu: deb [ signed-by=/usr/share/keyrings/mongodb-server-6.0.gpg ] https://repo.mongodb.org/apt/ubuntu jammy/mongodb-org/6.0 multiverse
+    amazon-ebs.ubuntu: Hit:1 http://us-east-2.ec2.archive.ubuntu.com/ubuntu noble InRelease
+    amazon-ebs.ubuntu: Hit:2 http://us-east-2.ec2.archive.ubuntu.com/ubuntu noble-updates InRelease
+    amazon-ebs.ubuntu: Hit:3 http://us-east-2.ec2.archive.ubuntu.com/ubuntu noble-backports InRelease
+    amazon-ebs.ubuntu: Get:4 https://repo.mongodb.org/apt/ubuntu jammy/mongodb-org/6.0 InRelease [4009 B]
+    amazon-ebs.ubuntu: Hit:5 http://security.ubuntu.com/ubuntu noble-security InRelease
+    amazon-ebs.ubuntu: Get:6 https://repo.mongodb.org/apt/ubuntu jammy/mongodb-org/6.0/multiverse amd64 Packages [98.6 kB]
+    amazon-ebs.ubuntu: Fetched 103 kB in 1s (174 kB/s)
+    amazon-ebs.ubuntu: Reading package lists...
+    amazon-ebs.ubuntu: Reading package lists...
+    amazon-ebs.ubuntu: Building dependency tree...
+    amazon-ebs.ubuntu: Reading state information...
+    amazon-ebs.ubuntu: The following additional packages will be installed:
+    amazon-ebs.ubuntu:   mongodb-database-tools mongodb-mongosh mongodb-org-database
+    amazon-ebs.ubuntu:   mongodb-org-database-tools-extra mongodb-org-mongos mongodb-org-server
+    amazon-ebs.ubuntu:   mongodb-org-shell mongodb-org-tools
+    amazon-ebs.ubuntu: The following NEW packages will be installed:
+    amazon-ebs.ubuntu:   mongodb-database-tools mongodb-mongosh mongodb-org mongodb-org-database
+    amazon-ebs.ubuntu:   mongodb-org-database-tools-extra mongodb-org-mongos mongodb-org-server
+    amazon-ebs.ubuntu:   mongodb-org-shell mongodb-org-tools
+    amazon-ebs.ubuntu: 0 upgraded, 9 newly installed, 0 to remove and 0 not upgraded.
+    amazon-ebs.ubuntu: Need to get 168 MB of archives.
+    amazon-ebs.ubuntu: After this operation, 517 MB of additional disk space will be used.
+    amazon-ebs.ubuntu: Get:1 https://repo.mongodb.org/apt/ubuntu jammy/mongodb-org/6.0/multiverse amd64 mongodb-database-tools amd64 100.12.2 [58.9 MB]
+    amazon-ebs.ubuntu: Get:2 https://repo.mongodb.org/apt/ubuntu jammy/mongodb-org/6.0/multiverse amd64 mongodb-mongosh amd64 2.5.2 [54.9 MB]
+    amazon-ebs.ubuntu: Get:3 https://repo.mongodb.org/apt/ubuntu jammy/mongodb-org/6.0/multiverse amd64 mongodb-org-shell amd64 6.0.24 [2982 B]
+    amazon-ebs.ubuntu: Get:4 https://repo.mongodb.org/apt/ubuntu jammy/mongodb-org/6.0/multiverse amd64 mongodb-org-server amd64 6.0.24 [31.7 MB]
+    amazon-ebs.ubuntu: Get:5 https://repo.mongodb.org/apt/ubuntu jammy/mongodb-org/6.0/multiverse amd64 mongodb-org-mongos amd64 6.0.24 [22.7 MB]
+    amazon-ebs.ubuntu: Get:6 https://repo.mongodb.org/apt/ubuntu jammy/mongodb-org/6.0/multiverse amd64 mongodb-org-database-tools-extra amd64 6.0.24 [7774 B]
+    amazon-ebs.ubuntu: Get:7 https://repo.mongodb.org/apt/ubuntu jammy/mongodb-org/6.0/multiverse amd64 mongodb-org-database amd64 6.0.24 [3426 B]
+    amazon-ebs.ubuntu: Get:8 https://repo.mongodb.org/apt/ubuntu jammy/mongodb-org/6.0/multiverse amd64 mongodb-org-tools amd64 6.0.24 [2768 B]
+    amazon-ebs.ubuntu: Get:9 https://repo.mongodb.org/apt/ubuntu jammy/mongodb-org/6.0/multiverse amd64 mongodb-org amd64 6.0.24 [2800 B]
+==> amazon-ebs.ubuntu: debconf: unable to initialize frontend: Dialog
+==> amazon-ebs.ubuntu: debconf: (Dialog frontend will not work on a dumb terminal, an emacs shell buffer, or without a controlling terminal.)
+==> amazon-ebs.ubuntu: debconf: falling back to frontend: Readline
+==> amazon-ebs.ubuntu: debconf: unable to initialize frontend: Readline
+==> amazon-ebs.ubuntu: debconf: (This frontend requires a controlling tty.)
+==> amazon-ebs.ubuntu: debconf: falling back to frontend: Teletype
+==> amazon-ebs.ubuntu: dpkg-preconfigure: unable to re-open stdin:
+    amazon-ebs.ubuntu: Fetched 168 MB in 2s (70.1 MB/s)
+    amazon-ebs.ubuntu: Selecting previously unselected package mongodb-database-tools.
+    amazon-ebs.ubuntu: (Reading database ... 70681 files and directories currently installed.)
+    amazon-ebs.ubuntu: Preparing to unpack .../0-mongodb-database-tools_100.12.2_amd64.deb ...
+    amazon-ebs.ubuntu: Unpacking mongodb-database-tools (100.12.2) ...
+    amazon-ebs.ubuntu: Selecting previously unselected package mongodb-mongosh.
+    amazon-ebs.ubuntu: Preparing to unpack .../1-mongodb-mongosh_2.5.2_amd64.deb ...
+    amazon-ebs.ubuntu: Unpacking mongodb-mongosh (2.5.2) ...
+    amazon-ebs.ubuntu: Selecting previously unselected package mongodb-org-shell.
+    amazon-ebs.ubuntu: Preparing to unpack .../2-mongodb-org-shell_6.0.24_amd64.deb ...
+    amazon-ebs.ubuntu: Unpacking mongodb-org-shell (6.0.24) ...
+    amazon-ebs.ubuntu: Selecting previously unselected package mongodb-org-server.
+    amazon-ebs.ubuntu: Preparing to unpack .../3-mongodb-org-server_6.0.24_amd64.deb ...
+    amazon-ebs.ubuntu: Unpacking mongodb-org-server (6.0.24) ...
+    amazon-ebs.ubuntu: Selecting previously unselected package mongodb-org-mongos.
+    amazon-ebs.ubuntu: Preparing to unpack .../4-mongodb-org-mongos_6.0.24_amd64.deb ...
+    amazon-ebs.ubuntu: Unpacking mongodb-org-mongos (6.0.24) ...
+    amazon-ebs.ubuntu: Selecting previously unselected package mongodb-org-database-tools-extra.
+    amazon-ebs.ubuntu: Preparing to unpack .../5-mongodb-org-database-tools-extra_6.0.24_amd64.deb ...
+    amazon-ebs.ubuntu: Unpacking mongodb-org-database-tools-extra (6.0.24) ...
+    amazon-ebs.ubuntu: Selecting previously unselected package mongodb-org-database.
+    amazon-ebs.ubuntu: Preparing to unpack .../6-mongodb-org-database_6.0.24_amd64.deb ...
+    amazon-ebs.ubuntu: Unpacking mongodb-org-database (6.0.24) ...
+    amazon-ebs.ubuntu: Selecting previously unselected package mongodb-org-tools.
+    amazon-ebs.ubuntu: Preparing to unpack .../7-mongodb-org-tools_6.0.24_amd64.deb ...
+    amazon-ebs.ubuntu: Unpacking mongodb-org-tools (6.0.24) ...
+    amazon-ebs.ubuntu: Selecting previously unselected package mongodb-org.
+    amazon-ebs.ubuntu: Preparing to unpack .../8-mongodb-org_6.0.24_amd64.deb ...
+    amazon-ebs.ubuntu: Unpacking mongodb-org (6.0.24) ...
+    amazon-ebs.ubuntu: Setting up mongodb-mongosh (2.5.2) ...
+    amazon-ebs.ubuntu: Setting up mongodb-org-server (6.0.24) ...
+    amazon-ebs.ubuntu: info: Selecting UID from range 100 to 999 ...
+    amazon-ebs.ubuntu:
+    amazon-ebs.ubuntu: info: Adding system user `mongodb' (UID 111) ...
+    amazon-ebs.ubuntu: info: Adding new user `mongodb' (UID 111) with group `nogroup' ...
+    amazon-ebs.ubuntu: info: Not creating `/nonexistent'.
+    amazon-ebs.ubuntu: info: Selecting GID from range 100 to 999 ...
+    amazon-ebs.ubuntu: info: Adding group `mongodb' (GID 113) ...
+    amazon-ebs.ubuntu: info: Adding user `mongodb' to group `mongodb' ...
+    amazon-ebs.ubuntu: Setting up mongodb-org-shell (6.0.24) ...
+    amazon-ebs.ubuntu: Setting up mongodb-database-tools (100.12.2) ...
+    amazon-ebs.ubuntu: Setting up mongodb-org-mongos (6.0.24) ...
+    amazon-ebs.ubuntu: Setting up mongodb-org-database-tools-extra (6.0.24) ...
+    amazon-ebs.ubuntu: Setting up mongodb-org-database (6.0.24) ...
+    amazon-ebs.ubuntu: Setting up mongodb-org-tools (6.0.24) ...
+    amazon-ebs.ubuntu: Setting up mongodb-org (6.0.24) ...
+    amazon-ebs.ubuntu: Processing triggers for man-db (2.12.0-4build2) ...
+==> amazon-ebs.ubuntu: debconf: unable to initialize frontend: Dialog
+==> amazon-ebs.ubuntu: debconf: (Dialog frontend will not work on a dumb terminal, an emacs shell buffer, or without a controlling terminal.)
+==> amazon-ebs.ubuntu: debconf: falling back to frontend: Readline
+==> amazon-ebs.ubuntu: debconf: unable to initialize frontend: Readline
+==> amazon-ebs.ubuntu: debconf: (This frontend requires a controlling tty.)
+==> amazon-ebs.ubuntu: debconf: falling back to frontend: Teletype
+==> amazon-ebs.ubuntu:
+==> amazon-ebs.ubuntu: Running kernel seems to be up-to-date.
+==> amazon-ebs.ubuntu:
+==> amazon-ebs.ubuntu: No services need to be restarted.
+==> amazon-ebs.ubuntu:
+==> amazon-ebs.ubuntu: No containers need to be restarted.
+==> amazon-ebs.ubuntu:
+==> amazon-ebs.ubuntu: No user sessions are running outdated binaries.
+==> amazon-ebs.ubuntu:
+==> amazon-ebs.ubuntu: No VM guests are running outdated hypervisor (qemu) binaries on this host.
+==> amazon-ebs.ubuntu: Created symlink /etc/systemd/system/multi-user.target.wants/mongod.service → /usr/lib/systemd/system/mongod.service.
+    amazon-ebs.ubuntu: Current Mongosh Log ID:  684a6cd8d73ae3b3d769e327
+    amazon-ebs.ubuntu: Connecting to:           mongodb://127.0.0.1:27017/?directConnection=true&serverSelectionTimeoutMS=2000&appName=mongosh+2.5.2
+    amazon-ebs.ubuntu: Using MongoDB:           6.0.24
+    amazon-ebs.ubuntu: Using Mongosh:           2.5.2
+    amazon-ebs.ubuntu:
+    amazon-ebs.ubuntu: For mongosh info see: https://www.mongodb.com/docs/mongodb-shell/
+    amazon-ebs.ubuntu:
+    amazon-ebs.ubuntu:
+    amazon-ebs.ubuntu: To help improve our products, anonymous usage data is collected and sent to MongoDB periodically (https://www.mongodb.com/legal/privacy-policy).
+    amazon-ebs.ubuntu: You can opt-out by running the disableTelemetry() command.
+    amazon-ebs.ubuntu:
+    amazon-ebs.ubuntu: ------
+    amazon-ebs.ubuntu:    The server generated these startup warnings when booting
+    amazon-ebs.ubuntu:    2025-06-12T05:59:47.443+00:00: Using the XFS filesystem is strongly recommended with the WiredTiger storage engine. See http://dochub.mongodb.org/core/prodnotes-filesystem
+    amazon-ebs.ubuntu:    2025-06-12T05:59:48.197+00:00: Access control is not enabled for the database. Read and write access to data and configuration is unrestricted
+    amazon-ebs.ubuntu: ------
+    amazon-ebs.ubuntu:
+    amazon-ebs.ubuntu: test> switched to db admin
+    amazon-ebs.ubuntu: admin> ... ... ... ... { ok: 1 }
+    amazon-ebs.ubuntu: admin>
+==> amazon-ebs.ubuntu: Stopping the source instance...
+    amazon-ebs.ubuntu: Stopping instance
+==> amazon-ebs.ubuntu: Waiting for the instance to stop...
+==> amazon-ebs.ubuntu: Creating AMI mongo-20250612055835 from instance i-00c5950acbf477029
+    amazon-ebs.ubuntu: AMI: ami-0e266ae8eb97503ce
+==> amazon-ebs.ubuntu: Waiting for AMI to become ready...
+==> amazon-ebs.ubuntu: Skipping Enable AMI deprecation...
+==> amazon-ebs.ubuntu: Skipping Enable AMI deregistration protection...
+==> amazon-ebs.ubuntu: Adding tags to AMI (ami-0e266ae8eb97503ce)...
+==> amazon-ebs.ubuntu: Tagging snapshot: snap-08363d21bd120c414
+==> amazon-ebs.ubuntu: Creating AMI tags
+    amazon-ebs.ubuntu: Adding tag: "App_Version": "1.0.0"
+    amazon-ebs.ubuntu: Adding tag: "Name": "mongo-20250612055835"
+    amazon-ebs.ubuntu: Adding tag: "OS_Version": "Ubuntu 24.04"
+    amazon-ebs.ubuntu: Adding tag: "App_Name": "mongo"
+==> amazon-ebs.ubuntu: Creating snapshot tags
+==> amazon-ebs.ubuntu: Terminating the source AWS instance...
+==> amazon-ebs.ubuntu: Cleaning up any extra volumes...
+==> amazon-ebs.ubuntu: No volumes to clean up, skipping
+==> amazon-ebs.ubuntu: Deleting temporary security group...
+==> amazon-ebs.ubuntu: Deleting temporary keypair...
+==> amazon-ebs.ubuntu: Running post-processor:  (type manifest)
+Build 'amazon-ebs.ubuntu' finished after 5 minutes 15 seconds.
+
+==> Wait completed after 5 minutes 15 seconds
+
+==> Builds finished. The artifacts of successful builds are:
+--> amazon-ebs.ubuntu: AMIs were created:
+us-east-2: ami-0e266ae8eb97503ce
+
+--> amazon-ebs.ubuntu: AMIs were created:
+us-east-2: ami-0e266ae8eb97503ce
