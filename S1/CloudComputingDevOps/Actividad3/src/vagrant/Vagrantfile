@@ -1,0 +1,20 @@
+
+# Vagrantfile for setting up a web server with Ansible provisioning
+Vagrant.configure("2") do |config|
+
+  # Specify the base box to use
+  config.vm.box = "ubuntu/jammy64"
+  config.vm.hostname = "webserver"
+
+  # Configure the VM to use a private network. 
+  config.vm.network "private_network", ip: "192.168.56.10"
+
+  config.vm.synced_folder "..", "/vagrant"
+  
+  # Enable the use of a synced folder to share files between the host and the VM.
+  config.vm.provision "ansible_local" do |ansible|
+    ansible.playbook = "/vagrant/ansible/playbook.yml"
+  end
+end
+# This Vagrantfile sets up a virtual machine with Ubuntu Jammy (22.04) as the base box.
+# It configures a private network with a static IP and provisions the VM using Ansible.

@@ -1,0 +1,5 @@
+- name: Configurar servidor web con Apache
+  hosts: localhost
+  become: yes
+  roles:
+    - webserver

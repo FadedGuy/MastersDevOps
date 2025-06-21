@@ -1,0 +1,33 @@
+# # This playbook installs Apache, copies HTML and CSS files, and configures the firewall.
+---
+- name: Instalar Apache
+  apt:
+    name: apache2
+    state: present
+    update_cache: yes
+
+- name: Copiar index.html
+  copy:
+    src: index.html
+    dest: /var/www/html/index.html
+
+- name: Copiar styles.css
+  copy:
+    src: styles.css
+    dest: /var/www/html/styles.css
+
+- name: Asegurarse de que el servicio Apache está activo
+  service:
+    name: apache2
+    state: started
+    enabled: yes
+
+- name: Reiniciar Apache para aplicar cambios
+  systemd:
+    name: apache2
+    state: restarted
+
+- name: Asegurarse de que el puerto 80 está abierto en el firewall
+  ufw:
+    rule: allow
+    name: 'Apache'
