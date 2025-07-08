@@ -1,0 +1,165 @@
+# =================== Filebeat Configuration ===================
+#  CONFIGURACIÓN COMPLETA PARA APOLLO SERVER
+
+filebeat.inputs:
+#  Logs de Apollo Server
+- type: log
+  enabled: true
+  paths:
+    - /home/ubuntu/app/logs/*.log
+  fields:
+    service: apollo-fintech-server
+    environment: production
+    component: application
+  fields_under_root: true
+  json.keys_under_root: true
+  json.add_error_key: true
+  multiline.pattern: '^\d{4}-\d{2}-\d{2}'
+  multiline.negate: true
+  multiline.match: after
+
+#  Logs de Nginx
+- type: log
+  enabled: true
+  paths:
+    - /var/log/nginx/access.log
+  fields:
+    service: apollo-fintech-server
+    environment: production
+    component: nginx-access
+  fields_under_root: true
+
+- type: log
+  enabled: true
+  paths:
+    - /var/log/nginx/error.log
+  fields:
+    service: apollo-fintech-server
+    environment: production
+    component: nginx-error
+  fields_under_root: true
+  multiline.pattern: '^\d{4}/\d{2}/\d{2}'
+  multiline.negate: true
+  multiline.match: after
+
+# 🖥 System logs
+- type: log
+  enabled: true
+  paths:
+    - /var/log/syslog
+  fields:
+    service: apollo-fintech-server
+    environment: production
+    component: system
+  fields_under_root: true
+
+#  PM2 logs
+- type: log
+  enabled: true
+  paths:
+    - /home/ubuntu/.pm2/logs/*.log
+  fields:
+    service: apollo-fintech-server
+    environment: production
+    component: pm2
+  fields_under_root: true
+
+# =================== Filebeat Modules ===================
+filebeat.config.modules:
+  path: ${path.config}/modules.d/*.yml
+  reload.enabled: true
+
+# =================== Processors ===================
+processors:
+  #  Agregar metadata del host
+  - add_host_metadata:
+      when.not.contains.tags: forwarded
+  
+  #  Agregar información de Docker si aplica
+  - add_docker_metadata: ~
+  
+  #  Parsear timestamps
+  - timestamp:
+      field: '@timestamp'
+      layouts:
+        - '2006-01-02T15:04:05.000Z'
+        - '2006-01-02T15:04:05Z'
+      test:
+        - '2023-12-25T10:30:45.123Z'
+
+  #  Enriquecer logs con información geográfica
+  - add_locale:
+      format: offset
+
+# =================== Outputs ===================
+#  Enviar a Elasticsearch en el servidor ELK
+output.elasticsearch:
+  hosts: ["10.0.1.200:9200"]
+  protocol: "http"
+  index: "filebeat-apollo-%{+yyyy.MM.dd}"
+  template.enabled: true
+  template.pattern: "filebeat-apollo-*"
+  template.settings:
+    index.number_of_shards: 1
+    index.number_of_replicas: 0
+
+#  Configuración alternativa para Logstash (comentada)
+#output.logstash:
+#  hosts: ["10.0.1.200:5044"]
+
+# =================== Kibana Setup ===================
+setup.kibana:
+  host: "10.0.1.200:5601"
+
+# =================== Index Template ===================
+setup.template:
+  enabled: true
+  name: "filebeat-apollo"
+  pattern: "filebeat-apollo-*"
+  settings:
+    index.number_of_shards: 1
+    index.number_of_replicas: 0
+
+# =================== ILM Policy ===================
+setup.ilm:
+  enabled: true
+  rollover_alias: "filebeat-apollo"
+  pattern: "{now/d}-000001"
+  policy: "filebeat-apollo-policy"
+
+# =================== Dashboards ===================
+setup.dashboards:
+  enabled: true
+  index: "filebeat-apollo-*"
+
+# =================== Logging ===================
+logging.level: info
+logging.to_files: true
+logging.files:
+  path: /var/log/filebeat
+  name: filebeat
+  keepfiles: 7
+  permissions: 0640
+
+# =================== Monitoring ===================
+monitoring.enabled: true
+monitoring.elasticsearch:
+  hosts: ["10.0.1.200:9200"]
+
+# =================== Security ===================
+#  Para producción, habilitar SSL
+#output.elasticsearch:
+#  hosts: ["10.0.1.200:9200"]
+#  protocol: "https"
+#  ssl.certificate_authorities: ["/etc/filebeat/certs/ca.pem"]
+#  ssl.certificate: "/etc/filebeat/certs/filebeat.pem"
+#  ssl.key: "/etc/filebeat/certs/filebeat-key.pem"
+
+# =================== Performance Tuning ===================
+queue.mem:
+  events: 4096
+  flush.min_events: 512
+  flush.timeout: 5s
+
+bulk_max_size: 1600
+worker: 2

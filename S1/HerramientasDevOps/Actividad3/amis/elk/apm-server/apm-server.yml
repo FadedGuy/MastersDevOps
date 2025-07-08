@@ -1,0 +1,154 @@
+# =================== APM Server Configuration ===================
+#  CONFIGURACIÓN COMPLETA PARA APOLLO GRAPHQL MONITORING
+
+# =================== APM Server ===================
+apm-server:
+  #  Host y puerto donde escucha APM Server
+  host: "0.0.0.0:8200"
+  
+  #  Configuración de acceso
+  max_header_size: 1048576
+  idle_timeout: 45s
+  read_timeout: 30s
+  write_timeout: 30s
+  max_event_size: 307200
+  capture_personal_data: true
+  
+  #  Configuración específica para GraphQL
+  rum:
+    enabled: false  # Deshabilitado para server-side only
+    
+  #  Configuración de instrumentación
+  instrumentation:
+    enabled: true
+    environment: production
+    
+  # Configuración de etiquetas globales
+  default_service_environment: production
+
+# =================== Queue Settings ===================
+queue.mem:
+  events: 4096
+  flush.min_events: 10
+  flush.timeout: 1s
+
+# =================== Output Configuration ===================
+#  Enviar datos APM a Elasticsearch
+output.elasticsearch:
+  hosts: ["localhost:9200"]
+  protocol: "http"
+  
+  #  Templates específicos para APM
+  template.enabled: true
+  template.pattern: "apm-*"
+  template.settings:
+    index:
+      number_of_shards: 1
+      number_of_replicas: 0
+      mapping.total_fields.limit: 2000
+      
+  #  Configuración de índices por tipo de dato
+  indices:
+    - index: "apm-%{[observer.version]}-sourcemap"
+      when.contains:
+        processor.event: "sourcemap"
+        
+    - index: "apm-%{[observer.version]}-error-%{+yyyy.MM.dd}"
+      when.contains:
+        processor.event: "error"
+        
+    - index: "apm-%{[observer.version]}-transaction-%{+yyyy.MM.dd}"
+      when.contains:
+        processor.event: "transaction"
+        
+    - index: "apm-%{[observer.version]}-span-%{+yyyy.MM.dd}"
+      when.contains:
+        processor.event: "span"
+        
+    - index: "apm-%{[observer.version]}-metric-%{+yyyy.MM.dd}"
+      when.contains:
+        processor.event: "metric"
+        
+    - index: "apm-%{[observer.version]}-profile-%{+yyyy.MM.dd}"
+      when.contains:
+        processor.event: "profile"
+
+# =================== Kibana Integration ===================
+setup.kibana:
+  host: "localhost:5601"
+  
+#  Configuración de dashboards automáticos
+setup.dashboards:
+  enabled: true
+  
+#  ILM Policy para gestión del ciclo de vida
+setup.ilm:
+  enabled: true
+  rollover_alias: "apm"
+  pattern: "{now/d}-000001"
+  policy: "apm-rollover-30-days"
+
+# =================== Template Configuration ===================
+setup.template:
+  enabled: true
+  name: "apm"
+  pattern: "apm-*"
+  settings:
+    index:
+      number_of_shards: 1
+      number_of_replicas: 0
+      
+# =================== Logging ===================
+logging.level: info
+logging.to_files: true
+logging.files:
+  path: /var/log/apm-server
+  name: apm-server
+  keepfiles: 7
+  permissions: 0640
+
+# =================== Monitoring ===================
+monitoring.enabled: true
+monitoring.elasticsearch:
+  hosts: ["localhost:9200"]
+
+# =================== Processors ===================
+processors:
+  #  Agregar información del host
+  - add_host_metadata:
+      netinfo.enabled: true
+      
+  #  Enriquecer con información del observador
+  - add_observer_metadata:
+      netinfo.enabled: true
+      
+  #  Agregar etiquetas específicas de FinTech
+  - add_tags:
+      tags: [fintech, apollo-graphql, production]
+      target: "tags"
+
+# =================== Security Configuration ===================
+#  Para producción, configurar autenticación
+#apm-server:
+#  auth:
+#    api_key:
+#      enabled: true
+#      limit: 100
+#    secret_token: "your-secret-token-here"
+
+# =================== Performance Tuning ===================
+#  Optimizaciones para alto rendimiento
+apm-server:
+  concurrent_requests: 5
+  max_procs: 4
+
+# =================== Data Stream Configuration ===================
+#  Configuración para Elasticsearch 8.x
+setup.template.type: "index_template"
+setup.template.settings:
+  index:
+    number_of_shards: 1
+    number_of_replicas: 0
+    lifecycle:
+      name: "apm-policy"
+      rollover_alias: "apm"

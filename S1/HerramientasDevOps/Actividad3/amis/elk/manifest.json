@@ -1,0 +1,77 @@
+{
+  "builds": [
+    {
+      "name": "ubuntu",
+      "builder_type": "amazon-ebs",
+      "build_time": 1750858151,
+      "files": null,
+      "artifact_id": "us-east-2:ami-07babdff2302026c6",
+      "packer_run_uuid": "b8361769-4b34-1dde-a70c-c1aa759a91b9",
+      "custom_data": null
+    },
+    {
+      "name": "ubuntu",
+      "builder_type": "amazon-ebs",
+      "build_time": 1750860322,
+      "files": null,
+      "artifact_id": "us-east-2:ami-015ad53723cdc14d8",
+      "packer_run_uuid": "7899ac43-ff52-f79b-855f-86381749e76b",
+      "custom_data": null
+    },
+    {
+      "name": "ubuntu",
+      "builder_type": "amazon-ebs",
+      "build_time": 1750887909,
+      "files": null,
+      "artifact_id": "us-east-2:ami-041ec3d7a75db11a7",
+      "packer_run_uuid": "8e357393-dff3-cf06-7719-0bdd0da42faa",
+      "custom_data": null
+    },
+    {
+      "name": "ubuntu",
+      "builder_type": "amazon-ebs",
+      "build_time": 1750891179,
+      "files": null,
+      "artifact_id": "us-east-2:ami-0dbfdecd6bdf70c4d",
+      "packer_run_uuid": "1f332cbb-6bd5-d99b-9cf9-bc6e37f1cd10",
+      "custom_data": null
+    },
+    {
+      "name": "ubuntu",
+      "builder_type": "amazon-ebs",
+      "build_time": 1750892396,
+      "files": null,
+      "artifact_id": "us-east-2:ami-0bf767dedd912af39",
+      "packer_run_uuid": "0e9e9727-6345-789b-56e0-6786ab58d15c",
+      "custom_data": null
+    },
+    {
+      "name": "ubuntu",
+      "builder_type": "amazon-ebs",
+      "build_time": 1750893583,
+      "files": null,
+      "artifact_id": "us-east-2:ami-0548f6af251a06e94",
+      "packer_run_uuid": "70fc3020-67b5-7c6d-ba8b-fadabfc0caeb",
+      "custom_data": null
+    },
+    {
+      "name": "ubuntu",
+      "builder_type": "amazon-ebs",
+      "build_time": 1750894534,
+      "files": null,
+      "artifact_id": "us-east-2:ami-0639a30a0099e8c27",
+      "packer_run_uuid": "ddb8512e-e558-b786-e01f-10d7f6b78604",
+      "custom_data": null
+    },
+    {
+      "name": "ubuntu",
+      "builder_type": "amazon-ebs",
+      "build_time": 1750895686,
+      "files": null,
+      "artifact_id": "us-east-2:ami-00950be7efce3789d",
+      "packer_run_uuid": "7ed20319-362c-99b0-c445-f4e3b92e1a93",
+      "custom_data": null
+    }
+  ],
+  "last_run_uuid": "7ed20319-362c-99b0-c445-f4e3b92e1a93"
+}

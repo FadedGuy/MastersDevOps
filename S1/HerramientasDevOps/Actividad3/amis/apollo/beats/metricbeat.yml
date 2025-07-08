@@ -1,0 +1,133 @@
+# =================== Metricbeat Configuration ===================
+#  CONFIGURACIÓN COMPLETA PARA MONITOREO DE APOLLO SERVER
+
+# =================== System Module ===================
+metricbeat.modules:
+
+# 🖥 Métricas del sistema
+- module: system
+  metricsets:
+    - cpu             # CPU usage per core
+    - load            # CPU load averages
+    - memory          # Memory usage
+    - network         # Network I/O
+    - process         # Per process metrics
+    - process_summary # Process summary
+    - uptime          # System uptime
+    - socket_summary  # Socket summary
+    - entropy         # Available entropy
+    - core            # CPU core metrics
+    - diskio          # Disk I/O
+    - filesystem      # Filesystem metrics
+    - fsstat          # File system summary metrics
+    - socket          # Socket metrics
+  enabled: true
+  period: 10s
+  processes: ['.*']
+  process.include_top_n:
+    by_cpu: 5      # include top 5 processes by CPU
+    by_memory: 5   # include top 5 processes by memory
+  
+  #  Configuración específica para Node.js
+  process.cmdline.cache.enabled: true
+  process.cgroups.enabled: true
+  process.include_cpu_ticks: true
+
+#  Métricas de Nginx
+- module: nginx
+  metricsets: ["stubstatus"]
+  enabled: true
+  period: 10s
+  hosts: ["http://localhost/nginx_status"]
+  server_status_path: "nginx_status"
+
+# 🐳 Métricas de Docker (si se usa)
+- module: docker
+  metricsets:
+    - "container"
+    - "cpu"
+    - "diskio"
+    - "healthcheck"
+    - "info"
+    - "image"
+    - "memory"
+    - "network"
+  enabled: false  # Cambiar a true si usas Docker
+  hosts: ["unix:///var/run/docker.sock"]
+  period: 10s
+
+#  Métricas de Node.js/JavaScript
+- module: beat
+  metricsets:
+    - stats
+    - state
+  enabled: true
+  period: 30s
+
+# =================== Processors ===================
+processors:
+  #  Agregar metadata del host
+  - add_host_metadata:
+      when.not.contains.tags: forwarded
+      netinfo.enabled: true
+      cache.ttl: 5m
+      geo:
+        name: us-east-1a
+        continent_name: North America
+        country_iso_code: US
+        region_name: Virginia
+        city_name: Ashburn
+
+  #  Agregar información de proceso
+  - add_process_metadata:
+      match_pids: ['system.process.ppid']
+      target: system.process.parent
+
+  #  Enriquecer con etiquetas del servicio
+  - add_tags:
+      tags: [apollo-server, fintech, production]
+      target: "tags"
+
+# =================== Output Configuration ===================
+#  Enviar a Elasticsearch
+output.elasticsearch:
+  hosts: ["10.0.1.200:9200"]
+  protocol: "http"
+  index: "metricbeat-apollo-%{+yyyy.MM.dd}"
+  template.enabled: true
+  template.pattern: "metricbeat-apollo-*"
+  template.settings:
+    index.number_of_shards: 1
+    index.number_of_replicas: 0
+
+# =================== Kibana Setup ===================
+setup.kibana:
+  host: "10.0.1.200:5601"
+
+# =================== Dashboards ===================
+setup.dashboards:
+  enabled: true
+  index: "metricbeat-apollo-*"
+
+# =================== Logging ===================
+logging.level: info
+logging.to_files: true
+logging.files:
+  path: /var/log/metricbeat
+  name: metricbeat
+  keepfiles: 7
+  permissions: 0640
+
+# =================== Monitoring ===================
+monitoring.enabled: true
+monitoring.elasticsearch:
+  hosts: ["10.0.1.200:9200"]
+
+# =================== Performance Tuning ===================
+queue.mem:
+  events: 4096
+  flush.min_events: 512
+  flush.timeout: 5s
+
+bulk_max_size: 1600
+worker: 2

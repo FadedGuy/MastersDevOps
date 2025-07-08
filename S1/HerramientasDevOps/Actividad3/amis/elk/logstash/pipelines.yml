@@ -1,0 +1,28 @@
+# =================== Logstash Pipelines Configuration ===================
+#  CONFIGURACIÓN DE MÚLTIPLES PIPELINES
+
+#  Pipeline principal para logs de Apollo
+- pipeline.id: apollo-logs
+  path.config: "/etc/logstash/conf.d/apollo-logs.conf"
+  pipeline.workers: 2
+  pipeline.batch.size: 125
+  pipeline.batch.delay: 50
+  queue.type: persisted
+  queue.max_bytes: 1gb
+  queue.checkpoint.writes: 1024
+
+#  Pipeline para métricas y eventos de APM
+- pipeline.id: apm-metrics
+  path.config: "/etc/logstash/conf.d/apm-metrics.conf"
+  pipeline.workers: 1
+  pipeline.batch.size: 50
+  pipeline.batch.delay: 10
+  
+#  Pipeline para logs de seguridad
+- pipeline.id: security-logs
+  path.config: "/etc/logstash/conf.d/security-logs.conf"
+  pipeline.workers: 1
+  pipeline.batch.size: 25
+  pipeline.batch.delay: 5
+  queue.type: persisted
+  queue.max_bytes: 512mb
