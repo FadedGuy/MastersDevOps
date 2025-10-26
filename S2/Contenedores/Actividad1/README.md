@@ -8,7 +8,22 @@ docker build -t my-nginx .
 docker build -t my-wordpress .
 ```
 
-## Puesta en marcha
+## Puesta en marcha (con docker-compose)
+```bash
+# Para ejecutarlo creando una nueva build de las imagenes
+docker compose up --build
+
+# Para ejecutarlo utilizando las imagenes desde Docker Hub
+docker compose up
+
+# Para apagarlo
+docker compose down
+
+# Para apagarlo y borrar los volumenes tambien
+docker compose down -v
+```
+
+## Puesta en marcha (sin docker-compose)
 
 ```bash
 # Creamos una red sobre la cual se comunicaran los contenedores
