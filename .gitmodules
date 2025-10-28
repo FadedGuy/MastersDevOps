@@ -1,0 +1,6 @@
+[submodule "S2/EntornosCICD/MasterDevOps-CICD-Act2"]
+	path = S2/EntornosCICD/MasterDevOps-CICD-Act2
+	url = git@github.com:FadedGuy/MasterDevOps-CICD-Act2
+[submodule "S2/EntornosCICD/MasterDevOps-CICD-Act1"]
+	path = S2/EntornosCICD/MasterDevOps-CICD-Act1
+	url = git@github.com:FadedGuy/MasterDevOps-CICD-Act1
