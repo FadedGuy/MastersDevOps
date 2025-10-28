@@ -1,63 +1,79 @@
+# Nombre/identificador del proyecto
 name: "wordpress"
 services:
-    wp-db:
-      image: mysql:8.1
-      container_name: wp-db
-      volumes:
-        - wp-db-data:/var/lib/mysql
-      environment:
-        MYSQL_ROOT_PASSWORD: "rootpassword"
-        MYSQL_DATABASE: "wordpress"
-        MYSQL_USER: "wpuser"
-        MYSQL_PASSWORD: "wppassword"
-      networks:
-        - wp-network
-      healthcheck:
-        test: ["CMD-SHELL", "mysqladmin ping -h localhost -uroot -prootpassword | grep 'mysqld is alive'"]
-        interval: 10s
-        timeout: 10s
-        retries: 5
-        start_period: 20s
+  # Servicio de base de datos MySQL
+  wp-db:
+    # Imagen de MySQL 8.1
+    image: mysql:8.1
+    # Identificador del contenedor
+    container_name: wp-db
+    # Volumen persistente para los datos
+    volumes:
+      - wp-db-data:/var/lib/mysql  
+    # Variables de entorno para la configuracion de la bd
+    environment:
+      MYSQL_ROOT_PASSWORD: "rootpassword"
+      MYSQL_DATABASE: "wordpress"
+      MYSQL_USER: "wpuser"
+      MYSQL_PASSWORD: "wppassword"
+    # Red interna especifica para la comunicacion de servicios de este proyecto
+    networks:
+      - wp-network
+    # Verifica que la BD esté lista antes de continuar
+    healthcheck:                    
+      test: ["CMD-SHELL", "mysqladmin ping -h localhost -uroot -prootpassword | grep 'mysqld is alive'"]
+      interval: 10s
+      timeout: 10s
+      retries: 5
+      start_period: 20s
 
-    wp-php:
-      build: 
-        context: ./WordPress
-        dockerfile: Dockerfile
-      image: fadedguy/my-wordpress:latest
-      container_name: wp-php
-      environment:
-        DB_NAME: "wordpress"
-        DB_USER: "wpuser"
-        DB_PASSWORD: "wppassword"
-        DB_HOST: "wp-db"
-        WP_URL: "http://localhost:8080"
-        WP_TITLE: "WordPressDockerCompose"
-        WP_ADMIN_USER: "admin"
-        WP_ADMIN_PASSWORD: "adminpassword"
-        WP_ADMIN_EMAIL: "kevin.aceves@hotmail.com"
-      depends_on: 
-        wp-db:
-          condition: service_healthy
-      networks:
-        - wp-network
+  # Servicio PHP-FPM con WordPress
+  wp-php:
+    # El build se hace desde la carpeta ./WordPress con el dockerfile de nombre Dockerfile
+    build: 
+      context: ./WordPress          
+      dockerfile: Dockerfile
+    # Nombre de la imagen generada por el build 
+    image: fadedguy/my-wordpress:latest
+    container_name: wp-php
+    # Variables de entorno para la configuracion de WP y su conexion de la db
+    environment:
+      DB_NAME: "wordpress"
+      DB_USER: "wpuser"
+      DB_PASSWORD: "wppassword"
+      DB_HOST: "wp-db"
+      WP_URL: "http://localhost:8080"
+      WP_TITLE: "WordPressDockerCompose"
+      WP_ADMIN_USER: "admin"
+      WP_ADMIN_PASSWORD: "adminpassword"
+      WP_ADMIN_EMAIL: "kevin.aceves@hotmail.com"
+    # Espera a que wp-db pase el healthcheck
+    depends_on:                     
+      wp-db:
+        condition: service_healthy
+    networks:
+      - wp-network
 
-    wp-nginx:
-      build: 
-        context: ./Nginx
-        dockerfile: Dockerfile
-      image: fadedguy/my-nginx:latest
-      container_name: wp-nginx
-      ports:
-        - "8080:80"
-      depends_on:
-        - wp-php
-      networks:
-        - wp-network
-    
+  # Servicio Nginx como proxy inverso
+  wp-nginx:
+    # El build se hace desde la carpeta ./Nginx con el dockerfile de nombre Dockerfile
+    build: 
+      context: ./Nginx              
+      dockerfile: Dockerfile
+    # Nombre de la imagen generada por el build 
+    image: fadedguy/my-nginx:latest
+    container_name: wp-nginx
+    # Mapear el puerto 80 del contenedor al puerto 8080 del host
+    ports:
+      - "8080:80"                   
+    # Espera a que wp-php haya sido inicializado
+    depends_on:
+      - wp-php
+    networks:
+      - wp-network
 volumes:
   wp-db-data:
     driver: local
-
 networks:
   wp-network:
     driver: bridge
