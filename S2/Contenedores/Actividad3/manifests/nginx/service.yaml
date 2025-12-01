@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: wp-nginx
+  namespace: wordpress
+spec:
+  selector:
+    app: wp-nginx
+  ports:
+    - port: 80
+      targetPort: 80
+  type: LoadBalancer

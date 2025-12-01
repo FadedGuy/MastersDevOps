@@ -1,0 +1,23 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: wp-nginx
+  namespace: wordpress
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: wp-nginx
+  template:
+    metadata:
+      labels:
+        app: wp-nginx
+    spec:
+      containers:
+        - name: nginx
+          image: fadedguy/my-nginx:latest
+          env:
+            - name: PHP_FPM_HOST
+              value: "wp-php"
+          ports:
+            - containerPort: 80

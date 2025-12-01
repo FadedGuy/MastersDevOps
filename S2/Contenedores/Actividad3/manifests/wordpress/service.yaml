@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: wp-php
+  namespace: wordpress
+spec:
+  selector:
+    app: wp-php
+  ports:
+    - port: 9000
+      targetPort: 9000
+  type: ClusterIP

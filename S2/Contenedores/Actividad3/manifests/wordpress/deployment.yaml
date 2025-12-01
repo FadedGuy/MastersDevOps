@@ -1,0 +1,66 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: wp-php
+  namespace: wordpress
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: wp-php
+  template:
+    metadata:
+      labels:
+        app: wp-php
+    spec:
+      containers:
+        - name: php-fpm
+          image: fadedguy/my-wordpress:latest
+          env:
+            - name: DB_NAME
+              valueFrom:
+                configMapKeyRef:
+                  name: wordpress-config
+                  key: DB_NAME
+            - name: DB_USER
+              valueFrom:
+                configMapKeyRef:
+                  name: wordpress-config
+                  key: DB_USER
+            - name: DB_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: wordpress-secrets
+                  key: MYSQL_PASSWORD
+            - name: DB_HOST
+              valueFrom:
+                configMapKeyRef:
+                  name: wordpress-config
+                  key: DB_HOST
+            - name: WP_URL
+              valueFrom:
+                configMapKeyRef:
+                  name: wordpress-config
+                  key: WP_URL
+            - name: WP_TITLE
+              valueFrom:
+                configMapKeyRef:
+                  name: wordpress-config
+                  key: WP_TITLE
+            - name: WP_ADMIN_USER
+              valueFrom:
+                configMapKeyRef:
+                  name: wordpress-config
+                  key: WP_ADMIN_USER
+            - name: WP_ADMIN_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: wordpress-secrets
+                  key: WP_ADMIN_PASSWORD
+            - name: WP_ADMIN_EMAIL
+              valueFrom:
+                configMapKeyRef:
+                  name: wordpress-config
+                  key: WP_ADMIN_EMAIL
+          ports:
+            - containerPort: 9000
