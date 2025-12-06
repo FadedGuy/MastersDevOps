@@ -64,3 +64,10 @@ spec:
                   key: WP_ADMIN_EMAIL
           ports:
             - containerPort: 9000
+          volumeMounts: 
+            - name: wordpress-data
+              mountPath: /var/www/wordpress
+      volumes:
+        - name: wordpress-data
+          persistentVolumeClaim:
+            claimName: wp-efs-pvc

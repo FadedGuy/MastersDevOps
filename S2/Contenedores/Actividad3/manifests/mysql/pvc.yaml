@@ -5,8 +5,9 @@ metadata:
   namespace: wordpress
 spec:
   accessModes:
-    - ReadWriteOnce
+    - ReadWriteMany
+  storageClassName: ""
   resources:
     requests:
       storage: 10Gi
-  storageClassName: gp3
+  volumeName: wp-db-efs-pv
