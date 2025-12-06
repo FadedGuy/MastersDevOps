@@ -13,30 +13,32 @@ RUN apt-get update && apt-get install -y \
     && docker-php-ext-install mysqli pdo pdo_mysql zip \
     && rm -rf /var/lib/apt/lists/*
 
-# Crear directorio para WordPress
-RUN mkdir -p /var/www && chown www-data:www-data /var/www
+# Crear directorios base
+RUN mkdir -p /usr/src/wordpress && \
+    mkdir -p /var/www && \
+    chown -R www-data:www-data /var/www /usr/src/wordpress
 
-# Descargar WordPress
-RUN curl -sSL https://wordpress.org/latest.tar.gz | tar -xz -C /var/www && \
-    chown -R www-data:www-data /var/www/wordpress
+# Descargar WordPress en /usr/src/wordpress
+RUN curl -sSL https://wordpress.org/latest.tar.gz \
+    | tar -xz -C /usr/src \
+    && chown -R www-data:www-data /usr/src/wordpress
 
 # Instalar WP-CLI
 RUN curl -O https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli.phar \
     && chmod +x wp-cli.phar \
     && mv wp-cli.phar /usr/local/bin/wp
 
-# Copiar entrypoint y hacerlo ejecutable
+# Copiar entrypoint
 COPY docker-entrypoint.sh /usr/local/bin/docker-entrypoint.sh
 RUN chmod +x /usr/local/bin/docker-entrypoint.sh
 
-# Establecer el usuario del contenedor a www-data (en lugar de root)
+# WordPress no debe correr como root
 USER www-data
 
-# Establecer directorio de trabajo
+# WordPress path final
 WORKDIR /var/www/wordpress
 
-# Exponer el puerto 9000
+# Exponer PHP-FPM
 EXPOSE 9000
 
-# Indicar que el punto de entrada es el script
 ENTRYPOINT ["docker-entrypoint.sh"]

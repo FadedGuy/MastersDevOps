@@ -2,6 +2,7 @@ apiVersion: v1
 kind: PersistentVolume
 metadata:
   name: wp-db-efs-pv
+  namespace: wordpress
 spec:
   capacity:
     storage: 10Gi

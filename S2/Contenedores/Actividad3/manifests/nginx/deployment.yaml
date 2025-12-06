@@ -21,10 +21,3 @@ spec:
               value: "wp-php"
           ports:
             - containerPort: 80
-          volumeMounts: 
-            - name: wordpress-data
-              mountPath: /var/www/wordpress
-      volumes:
-        - name: wordpress-data
-          persistentVolumeClaim:
-            claimName: wp-efs-pvc

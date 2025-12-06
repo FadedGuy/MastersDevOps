@@ -13,6 +13,9 @@ spec:
       labels:
         app: wp-php
     spec:
+      securityContext:
+        runAsUser: 33
+        runAsGroup: 33
       containers:
         - name: php-fpm
           image: fadedguy/my-wordpress:latest
@@ -64,10 +67,3 @@ spec:
                   key: WP_ADMIN_EMAIL
           ports:
             - containerPort: 9000
-          volumeMounts: 
-            - name: wordpress-data
-              mountPath: /var/www/wordpress
-      volumes:
-        - name: wordpress-data
-          persistentVolumeClaim:
-            claimName: wp-efs-pvc
